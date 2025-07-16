@@ -17,118 +17,175 @@
         h1, h2, h3 {
             font-family: 'Lora', serif;
         }
+        .story-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-out, opacity 0.7s ease-out;
+            opacity: 0;
+        }
+        .story-content.active {
+            max-height: 1000px; /* Increased max-height to accommodate longer stories */
+            opacity: 1;
+        }
+
+        /* Unique background for each tea section using pseudo-elements for visual flair */
+        #derryl::before, #plan-b::before, #nektar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1; /* Subtler opacity for background elements */
+            pointer-events: none;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        #derryl::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐹🔥%3C/text%3E%3C/svg%3E");
+            background-size: 200px;
+            background-position: top left;
+        }
+        #plan-b::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧪🌿%3C/text%3E%3C/svg%3E");
+             background-size: 200px;
+            background-position: top right;
+        }
+        #nektar::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌌🦋%3C/text%3E%3C/svg%3E");
+            background-size: 200px;
+            background-position: bottom left;
+        }
+
+        /* Custom styling for chart container for consistent responsiveness */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px; /* Smaller max-width for mobile focus */
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px; /* Base height for charts */
+            max-height: 350px;
+        }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .chart-container {
+                height: 300px;
+            }
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .chart-container {
+                max-width: 100%; /* Allows it to take more space in grid */
+                height: 350px;
+            }
+        }
+
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800">
+<body class="bg-gray-900 text-gray-200">
 
-    <!-- Chosen Palette: Earthy Harmony -->
-    <!-- Application Structure Plan: A single-page, vertical-scrolling application. The structure is designed for storytelling. It starts with a hero section, followed by a clear navigation bar. Each of the three teas gets its own dedicated, full-screen section for focused presentation. Within each section, a two-column layout (on medium screens and up) presents a visual "data" chart next to the descriptive text. The core interaction is a "reveal" button for the whimsical origin story of each tea. This structure was chosen to guide the user through a narrative journey, creating curiosity and engagement, rather than just listing products. It turns a simple product page into an interactive experience. The "Feedback" section now includes a direct link to an external platform for reviews, simplifying the user flow. -->
-    <!-- Visualization & Content Choices: 
-        - Report Info: Tea names and types. Goal: Navigation/Organization. Viz/Method: Semantic sections with IDs and a navigation bar. Interaction: Smooth scroll on click. Justification: Provides clear, intuitive site structure. Library: HTML/JS.
-        - Report Info: Tea descriptions. Goal: Inform/Attract. Viz/Method: Stylized text blocks with clear typography. Interaction: Static. Justification: Delivers the core marketing message effectively. Library: HTML/Tailwind.
-        - Report Info: Tea origin stories. Goal: Entertain/Engage. Viz/Method: Initially hidden text blocks. Interaction: A button toggles visibility with a smooth transition. Justification: Creates an element of discovery and surprise, making the content more memorable. Library: JS.
-        - Report Info: Abstract characteristics of each tea (e.g., warmth, freshness, depth). Goal: Compare/Visualize. Viz/Method: A stylized Radar chart for each tea. Interaction: Hover tooltips. Justification: This creatively fulfills the "data visualization" requirement by translating qualitative, whimsical traits into a "data" profile, enhancing the unique branding of each tea. Library: Chart.js (Canvas).
-        - Updated Element: Review/Feedback mechanism. Goal: Redirect user to external feedback platform. Viz/Method: A styled anchor tag. Interaction: Direct link click. Justification: Fulfills user's request to link to an external platform, providing a straightforward user experience. Library: HTML/Tailwind.
-        - New Element: Favicon. Goal: Brand recognition/visual identity in browser tab. Viz/Method: Unicode emoji as a data URI for the favicon. Interaction: Passive. Justification: Provides a small, recognizable icon without requiring external image files, adhering to the constraints. Library: HTML.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-xl md:text-2xl font-bold text-stone-700">Авторский Чай</h1>
-            <ul class="flex space-x-4 md:space-x-8 text-sm md:text-base">
-                <li><a href="#derryl" class="hover:text-green-700 transition-colors duration-300">Дэррил</a></li>
-                <li><a href="#plan-b" class="hover:text-teal-700 transition-colors duration-300">План Б</a></li>
-                <li><a href="#nektar" class="hover:text-amber-800 transition-colors duration-300">Нектар</a></li>
+    <header class="bg-gray-800/80 backdrop-blur-lg sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-teal-400">Авторский Чай</h1>
+            <ul class="flex space-x-3 md:space-x-6 text-sm md:text-base">
+                <li><a href="#derryl" class="hover:text-green-400 transition-colors duration-300">Дэррил</a></li>
+                <li><a href="#plan-b" class="hover:text-blue-400 transition-colors duration-300">План Б</a></li>
+                <li><a href="#nektar" class="hover:text-orange-400 transition-colors duration-300">Нектар</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <section class="container mx-auto px-6 py-16 text-center">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4">Коллекция Уникального Иван-Чая</h2>
-            <p class="text-lg md:text-xl text-stone-600 max-w-3xl mx-auto">Погрузитесь в мир вкусов и историй, где каждый сорт чая — это не просто напиток, а целое приключение. В самом низу оставьте пожалуйста оценку)</p>
+        <section class="container mx-auto px-4 py-12 md:py-16 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-3 text-teal-300">Коллекция Уникального Иван-Чая</h2>
+            <p class="text-md md:text-xl text-gray-400 max-w-3xl mx-auto">Погрузитесь в мир вкусов и историй, где каждый сорт чая — это не просто напиток, а целое приключение.</p>
         </section>
 
-        <div id="tea-sections" class="flex flex-col gap-16 md:gap-24">
+        <div id="tea-sections" class="flex flex-col gap-8 md:gap-12">
             
-            <section id="derryl" class="container mx-auto px-6 py-12">
-                <div class="bg-white p-6 md:p-10 rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl">
-                    <div class="grid md:grid-cols-5 gap-8 md:gap-12 items-center">
-                        <div class="md:col-span-2">
-                            <div class="chart-container relative w-full max-w-sm mx-auto h-72 md:h-96">
-                                <canvas id="derrylChart"></canvas>
+            <section id="derryl" class="relative overflow-hidden py-8 md:py-12">
+                <div class="container mx-auto px-4">
+                    <div class="bg-gray-800 p-6 md:p-8 rounded-xl shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.01] relative z-10">
+                        <div class="flex flex-col md:flex-row gap-6 md:gap-10 items-center">
+                            <div class="w-full md:w-1/2">
+                                <div class="chart-container">
+                                    <canvas id="derrylChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="w-full md:w-1/2 text-center md:text-left">
+                                <h3 class="text-2xl md:text-3xl font-bold mb-1 text-green-400">Дэррил</h3>
+                                <p class="text-lg font-medium text-green-300 mb-3">Зелёный Запечённый Иван-чай</p>
+                                <p class="text-gray-300 mb-4 leading-relaxed text-sm md:text-base">Тёплый, обволакивающий вкус с нотками летних полей. Сладкий и слегка терпкий, согрет медленным запеканием. Опыт, который погружает в уникальную атмосферу.</p>
+                                <button data-target="story-derryl" class="toggle-story-btn bg-green-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-green-700 transition-transform duration-300 hover:scale-105 text-sm">История появления</button>
                             </div>
                         </div>
-                        <div class="md:col-span-3">
-                            <h3 class="text-3xl md:text-4xl font-bold mb-2 text-green-800">Дэррил</h3>
-                            <p class="text-lg font-medium text-green-600 mb-4">Зелёный Запечённый Иван-чай</p>
-                            <p class="text-stone-600 mb-6 leading-relaxed">Погрузитесь в объятия "Дэррила", чья уникальность раскрывается в глубоком, медленном запекании. Это тёплый, обволакивающий опыт, где каждая нотка вкуса кажется согретой солнцем и нежным огнём. Его аромат напоминает о летних полях после дождя, а во вкусе чувствуется мягкая сладость и лёгкая, приятная терпкость.</p>
-                            <button data-target="story-derryl" class="toggle-story-btn bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition-transform duration-300 hover:scale-105">История появления</button>
+                        <div id="story-derryl" class="story-content mt-6 pt-4 border-t border-green-700">
+                            <p class="text-gray-400 leading-relaxed text-xs md:text-sm">Однажды, в далёкой-далёкой деревне, где время текло по-особому, жил чудаковатый травник по имени Дэррил. Он был известен своими экспериментами, но однажды случилось нечто из ряда вон выходящее. Дэррил собирал иван-чай в полнолуние, когда на него напал... нет, не медведь, а гигантский, очень голодный хомяк, который утащил весь его урожай в свою подземную нору. Дэррил, недолго думая, бросился следом. Нора оказалась лабиринтом, ведущим прямо к центру Земли, где, как оказалось, находилась древняя, давно забытая печь, питаемая остаточным теплом ядра планеты. Хомяк, видимо, был гурманом, потому что аккуратно разложил листья иван-чая на горячих камнях. Дэррил, вместо того чтобы паниковать, решил подождать. И вот, спустя несколько дней блужданий по подземным туннелям, он обнаружил свой чай, идеально запечённый, с невероятным ароматом и вкусом. Хомяк, к слову, был уже сыт и мирно спал, а Дэррил вернулся домой с новым, уникальным рецептом, назвав его своим именем.</p>
                         </div>
-                    </div>
-                    <div id="story-derryl" class="hidden mt-8 pt-6 border-t border-green-200">
-                        <p class="text-stone-600 leading-relaxed text-sm md:text-base">Однажды, в далёкой-далёкой деревне, жил чудаковатый травник по имени Дэррил. Он собирал иван-чай в полнолуние, когда на него напал гигантский, очень голодный хомяк, который утащил весь его урожай в свою подземную нору. Нора вела прямо к центру Земли, где находилась древняя печь, питаемая теплом ядра планеты. Хомяк аккуратно разложил листья на горячих камнях. Спустя несколько дней Дэррил обнаружил свой чай, идеально запечённый, с невероятным ароматом. Хомяк, к слову, был уже сыт и мирно спал, а Дэррил вернулся домой с новым, уникальным рецептом.</p>
                     </div>
                 </div>
             </section>
 
-            <section id="plan-b" class="container mx-auto px-6 py-12">
-                 <div class="bg-white p-6 md:p-10 rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl">
-                    <div class="grid md:grid-cols-5 gap-8 md:gap-12 items-center">
-                         <div class="md:col-span-3 md:order-last">
-                            <h3 class="text-3xl md:text-4xl font-bold mb-2 text-teal-800">План Б</h3>
-                            <p class="text-lg font-medium text-teal-600 mb-4">Зелёный Обычный Базовый Иван-чай</p>
-                            <p class="text-stone-600 mb-6 leading-relaxed">"План Б" – это ода чистоте и простоте. Этот зелёный иван-чай является воплощением первозданной природы, предлагая вам классический, безупречный вкус, который никогда не подведёт. В каждой чашке вы найдёте свежесть утренней росы и энергию диких трав. Ваш надёжный спутник в любой ситуации.</p>
-                            <button data-target="story-plan-b" class="toggle-story-btn bg-teal-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-700 transition-transform duration-300 hover:scale-105">История появления</button>
-                        </div>
-                        <div class="md:col-span-2 md:order-first">
-                            <div class="chart-container relative w-full max-w-sm mx-auto h-72 md:h-96">
-                                <canvas id="planBChart"></canvas>
+            <section id="plan-b" class="relative overflow-hidden py-8 md:py-12">
+                <div class="container mx-auto px-4">
+                     <div class="bg-gray-800 p-6 md:p-8 rounded-xl shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.01] relative z-10">
+                        <div class="flex flex-col md:flex-row-reverse gap-6 md:gap-10 items-center">
+                             <div class="w-full md:w-1/2">
+                                <div class="chart-container">
+                                    <canvas id="planBChart"></canvas>
+                                </div>
+                            </div>
+                             <div class="w-full md:w-1/2 text-center md:text-left">
+                                <h3 class="text-2xl md:text-3xl font-bold mb-1 text-blue-400">План Б</h3>
+                                <p class="text-lg font-medium text-blue-300 mb-3">Зелёный Обычный Базовый Иван-чай</p>
+                                <p class="text-gray-300 mb-4 leading-relaxed text-sm md:text-base">Воплощение чистоты и простоты. Свежесть утренней росы и энергия диких трав в каждой чашке. Ваш надёжный и безупречный спутник на каждый день.</p>
+                                <button data-target="story-plan-b" class="toggle-story-btn bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 transition-transform duration-300 hover:scale-105 text-sm">История появления</button>
                             </div>
                         </div>
-                    </div>
-                    <div id="story-plan-b" class="hidden mt-8 pt-6 border-t border-teal-200">
-                        <p class="text-stone-600 leading-relaxed text-sm md:text-base">В одной секретной лаборатории учёные работали над "Идеальным Чаем Будущего", используя нанотехнологии и квантовые флуктуации. Но все их попытки заканчивались катастрофой: чай то становился невидимым, то превращался в желе. В отчаянии, младший лаборант просто взял свежие листья иван-чая, высушил их на солнце, как делали его предки, и заварил. Результат был настолько чистым и восхитительным, что учёные забыли о своих безумных экспериментах. Они назвали чай "План Б" — запасной вариант, который оказался идеальным.</p>
+                        <div id="story-plan-b" class="story-content mt-6 pt-4 border-t border-blue-700">
+                            <p class="text-gray-400 leading-relaxed text-xs md:text-sm">В одной секретной лаборатории, глубоко под землёй, группа гениальных, но очень рассеянных учёных работала над созданием "Идеального Чая Будущего". Их проект назывался "Проект Альфа". Они использовали нанотехнологии, квантовые флуктуации и даже пытались заставить чайные листья петь оперу, чтобы улучшить вкус. Но все их попытки заканчивались катастрофой: то чай становился невидимым, то начинал разговаривать на древних языках, то превращался в желе. В отчаянии, один из младших лаборантов, уставший от всей этой сумасшедшей науки, просто взял обычные, свежие листья иван-чая, высушил их на солнце, как делали его предки, и заварил. Результат был настолько чистым, ароматным и восхитительным, что учёные, попробовав его, забыли обо всех своих безумных экспериментах. Они назвали этот чай "План Б", потому что это был их запасной вариант, который оказался идеальным. С тех пор они поняли, что иногда самый простой путь – самый лучший.</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section id="nektar" class="container mx-auto px-6 py-12">
-                 <div class="bg-white p-6 md:p-10 rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl">
-                    <div class="grid md:grid-cols-5 gap-8 md:gap-12 items-center">
-                        <div class="md:col-span-2">
-                            <div class="chart-container relative w-full max-w-sm mx-auto h-72 md:h-96">
-                                <canvas id="nektarChart"></canvas>
+            <section id="nektar" class="relative overflow-hidden py-8 md:py-12">
+                <div class="container mx-auto px-4">
+                     <div class="bg-gray-800 p-6 md:p-8 rounded-xl shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.01] relative z-10">
+                        <div class="flex flex-col md:flex-row gap-6 md:gap-10 items-center">
+                            <div class="w-full md:w-1/2">
+                                <div class="chart-container">
+                                    <canvas id="nektarChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="w-full md:w-1/2 text-center md:text-left">
+                                <h3 class="text-2xl md:text-3xl font-bold mb-1 text-orange-400">Нектар</h3>
+                                <p class="text-lg font-medium text-orange-300 mb-3">Чёрный Долго Ферментированный и Обжаренный</p>
+                                <p class="text-gray-300 mb-4 leading-relaxed text-sm md:text-base">Насыщенный аромат с нотками сухофруктов и дымки. Результат долгой ферментации и обжаривания. Напиток с характером для особых моментов.</p>
+                                <button data-target="story-nektar" class="toggle-story-btn bg-orange-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-orange-700 transition-transform duration-300 hover:scale-105 text-sm">История появления</button>
                             </div>
                         </div>
-                        <div class="md:col-span-3">
-                            <h3 class="text-3xl md:text-4xl font-bold mb-2 text-amber-900">Нектар</h3>
-                            <p class="text-lg font-medium text-amber-700 mb-4">Чёрный Долго Ферментированный и Обжаренный</p>
-                            <p class="text-stone-600 mb-6 leading-relaxed">"Нектар" – напиток с характером, рождённый в результате долгой ферментации и искусного обжаривания. Его богатый, насыщенный аромат с нотками сухофруктов, шоколада и лёгкой дымки обещает незабываемое вкусовое путешествие. Чай для особых случаев и неторопливых вечеров.</p>
-                            <button data-target="story-nektar" class="toggle-story-btn bg-amber-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-amber-900 transition-transform duration-300 hover:scale-105">История появления</button>
+                        <div id="story-nektar" class="story-content mt-6 pt-4 border-t border-orange-700">
+                            <p class="text-gray-400 leading-relaxed text-xs md:text-sm">Давным-давно, высоко в горах, где облака касались вершин, жил старый отшельник, который был одержим идеей создать чай, способный даровать бессмертие (или хотя бы очень хорошее настроение). Он собирал листья иван-чая только в те ночи, когда на небе появлялась редкая Комета Долголетия. Затем он помещал их в гигантские дубовые бочки, которые закапывал глубоко в землю под корнями древних деревьев, где они ферментировались... нет, не годами, а целыми эпохами! Время от времени, когда наступало солнечное затмение, отшельник выкапывал бочки и обжаривал чай на углях, сделанных из метеоритов, упавших с той самой Кометы Долголетия. Однажды, во время такого обжаривания, в его костёр случайно упала капля росы, собранная с крыльев мифической бабочки, которая жила только на вершинах гор. Эта капля, соединившись с древним чаем и метеоритным огнём, превратила его в нечто невероятное – густой, ароматный, почти сиропообразный напиток, который отшельник назвал "Нектаром". С тех пор он не старел, а просто наслаждался своим чаем, делясь им лишь с теми, кто мог оценить его поистине космический вкус.</p>
                         </div>
-                    </div>
-                    <div id="story-nektar" class="hidden mt-8 pt-6 border-t border-amber-200">
-                        <p class="text-stone-600 leading-relaxed text-sm md:text-base">Высоко в горах жил отшельник, одержимый идеей создать чай бессмертия. Он собирал листья в ночи, когда на небе появлялась Комета Долголетия, ферментировал их целыми эпохами в дубовых бочках и обжаривал на углях из метеоритов. Однажды в костёр упала капля росы с крыльев мифической бабочки. Эта капля превратила чай в невероятный, густой напиток, который отшельник назвал "Нектаром". С тех пор он не старел, а лишь наслаждался своим чаем.</p>
                     </div>
                 </div>
             </section>
         </div>
 
-        <!-- Feedback Section with external link -->
-        <section id="feedback" class="container mx-auto px-6 py-12 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-stone-700">Ваше мнение важно для нас!</h2>
-            <p class="text-lg text-stone-600 mb-8 max-w-2xl mx-auto">Поделитесь своим впечатлением о нашей коллекции чая. Мы ценим каждый отзыв!</p>
-            <a href="https://forms.yandex.ru/cloud/687774de90fa7b828eab5c65" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-transform duration-300 hover:scale-105 shadow-md">
+        <section id="feedback" class="container mx-auto px-4 py-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-200">Ваше мнение важно для нас!</h2>
+            <p class="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">Поделитесь своим впечатлением о нашей коллекции чая. Мы ценим каждый отзыв!</p>
+            <a href="https://forms.yandex.ru/cloud/687774de90fa7b828eab5c65" target="_blank" rel="noopener noreferrer" class="inline-block bg-purple-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-purple-700 transition-transform duration-300 hover:scale-105 shadow-md">
                 Оставить оценку и отзыв
             </a>
         </section>
 
     </main>
 
-    <footer class="bg-stone-100 mt-24">
-        <div class="container mx-auto px-6 py-8 text-center text-stone-500">
+    <footer class="bg-gray-800 mt-20">
+        <div class="container mx-auto px-4 py-8 text-center text-gray-500">
             <p>&copy; 2025 Коллекция Авторского Чая. Все права и истории защищены.</p>
         </div>
     </footer>
@@ -140,23 +197,23 @@
                 derryl: {
                     labels: ['Теплота', 'Таинственность', 'Сладость', 'Уют', 'Хомячность'],
                     data: [9, 7, 8, 9, 5],
-                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
-                    borderColor: 'rgba(22, 163, 74, 1)',
-                    pointBackgroundColor: 'rgba(22, 163, 74, 1)'
+                    backgroundColor: 'rgba(52, 211, 153, 0.2)', /* green-300 */
+                    borderColor: 'rgba(34, 197, 94, 1)', /* green-500 */
+                    pointBackgroundColor: 'rgba(34, 197, 94, 1)'
                 },
                 planB: {
                     labels: ['Свежесть', 'Простота', 'Чистота', 'Энергия', 'Научность'],
                     data: [9, 10, 8, 7, 4],
-                    backgroundColor: 'rgba(20, 184, 166, 0.2)',
-                    borderColor: 'rgba(15, 118, 110, 1)',
-                    pointBackgroundColor: 'rgba(15, 118, 110, 1)'
+                    backgroundColor: 'rgba(96, 165, 250, 0.2)', /* blue-300 */
+                    borderColor: 'rgba(59, 130, 246, 1)', /* blue-500 */
+                    pointBackgroundColor: 'rgba(59, 130, 246, 1)'
                 },
                 nektar: {
                     labels: ['Глубина', 'Космичность', 'Насыщенность', 'Древность', 'Магия'],
                     data: [10, 8, 9, 7, 9],
-                    backgroundColor: 'rgba(217, 119, 6, 0.2)',
-                    borderColor: 'rgba(180, 83, 9, 1)',
-                    pointBackgroundColor: 'rgba(180, 83, 9, 1)'
+                    backgroundColor: 'rgba(251, 191, 36, 0.2)', /* amber-300 */
+                    borderColor: 'rgba(245, 158, 11, 1)', /* amber-500 */
+                    pointBackgroundColor: 'rgba(245, 158, 11, 1)'
                 }
             };
             
@@ -184,22 +241,23 @@
                         scales: {
                             r: {
                                 angleLines: {
-                                    color: 'rgba(0, 0, 0, 0.1)'
+                                    color: 'rgba(255, 255, 255, 0.1)' /* Light lines on dark background */
                                 },
                                 grid: {
-                                    color: 'rgba(0, 0, 0, 0.1)'
+                                    color: 'rgba(255, 255, 255, 0.1)' /* Light grid on dark background */
                                 },
                                 pointLabels: {
                                     font: {
                                         size: 12,
                                         family: "'Montserrat', sans-serif"
                                     },
-                                    color: '#333'
+                                    color: '#E5E7EB' /* gray-200 */
                                 },
                                 ticks: {
-                                    backdropColor: 'rgba(255, 255, 255, 0)',
-                                    color: 'rgba(0, 0, 0, 0.5)',
-                                    stepSize: 2
+                                    backdropColor: 'rgba(0, 0, 0, 0.5)', /* Darker backdrop for ticks */
+                                    color: 'rgba(255, 255, 255, 0.7)', /* Lighter tick labels */
+                                    stepSize: 2,
+                                    showLabelBackdrop: false
                                 },
                                 suggestedMin: 0,
                                 suggestedMax: 10
@@ -231,11 +289,12 @@
                     const targetId = button.dataset.target;
                     const storyElement = document.getElementById(targetId);
                     
-                    if (storyElement.classList.contains('hidden')) {
-                        storyElement.classList.remove('hidden');
+                    // Toggle 'active' class for smooth transition
+                    storyElement.classList.toggle('active');
+                    
+                    if (storyElement.classList.contains('active')) {
                         button.textContent = 'Скрыть историю';
                     } else {
-                        storyElement.classList.add('hidden');
                         button.textContent = 'История появления';
                     }
                 });
@@ -244,4 +303,3 @@
     </script>
 </body>
 </html>
-
