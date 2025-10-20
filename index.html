@@ -1,305 +1,559 @@
 <!DOCTYPE html>
-<html lang="ru" class="scroll-smooth">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Авторский Иван-Чай: Коллекция</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+    <title>Игра в Кальмара - Список Участников</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1a26; /* Глубокий бирюзово-черный */
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 20px 20px;
         }
-        h1, h2, h3 {
-            font-family: 'Lora', serif;
+        .squid-card {
+            background-color: #1a2a3a;
+            border: 1px solid #2d445a;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .story-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.7s ease-out, opacity 0.7s ease-out;
-            opacity: 0;
+        .squid-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 30px rgba(236, 72, 153, 0.2);
+            border-color: #ec4899;
         }
-        .story-content.active {
-            max-height: 1000px; /* Increased max-height to accommodate longer stories */
-            opacity: 1;
+        .squid-title {
+            font-weight: 900;
+            letter-spacing: 0.1em;
         }
-
-        /* Unique background for each tea section using pseudo-elements for visual flair */
-        #derryl::before, #plan-b::before, #nektar::before {
-            content: '';
+        .squid-title-shape {
+            font-size: 0.8em;
+            margin: 0 0.2em;
+        }
+        .status-badge {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .status-alive {
+            background-color: #10b981; /* Зеленый */
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+        }
+        .status-eliminated {
+            background-color: #ef4444; /* Красный */
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+        }
+        .player-number {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.1; /* Subtler opacity for background elements */
-            pointer-events: none;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center;
+            top: 1rem;
+            left: 1rem;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 0.25rem 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            border-radius: 0.5rem;
+            border: 2px solid #ec4899;
         }
-        #derryl::before {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐹🔥%3C/text%3E%3C/svg%3E");
-            background-size: 200px;
-            background-position: top left;
+        .info-label {
+            color: #94a3b8; /* Светло-серый */
         }
-        #plan-b::before {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧪🌿%3C/text%3E%3C/svg%3E");
-             background-size: 200px;
-            background-position: top right;
+        .info-value {
+            color: #e2e8f0; /* Белый */
         }
-        #nektar::before {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌌🦋%3C/text%3E%3C/svg%3E");
-            background-size: 200px;
-            background-position: bottom left;
-        }
-
-        /* Custom styling for chart container for consistent responsiveness */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 300px; /* Smaller max-width for mobile focus */
-            margin-left: auto;
-            margin-right: auto;
-            height: 250px; /* Base height for charts */
-            max-height: 350px;
-        }
-        @media (min-width: 640px) { /* sm breakpoint */
-            .chart-container {
-                height: 300px;
-            }
-        }
-        @media (min-width: 768px) { /* md breakpoint */
-            .chart-container {
-                max-width: 100%; /* Allows it to take more space in grid */
-                height: 350px;
-            }
-        }
-
     </style>
 </head>
-<body class="bg-gray-900 text-gray-200">
+<body>
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Заголовок -->
+        <header class="text-center mb-12">
+            <h1 class="squid-title text-4xl md:text-6xl text-white">
+                ИГРА
+                <span class="squid-title-shape text-pink-500">/</span>
+                КРЫСЫ
+            </h1>
+            <div class="text-pink-500 text-5xl md:text-7xl mt-2">
+                <span>○</span>
+                <span>△</span>
+                <span>□</span>
+            </div>
+            <p class="text-gray-400 mt-4 text-lg">Список отчаянных. Или безумных.</p>
+        </header>
 
-    <header class="bg-gray-800/80 backdrop-blur-lg sticky top-0 z-50 shadow-md">
-        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <h1 class="text-xl md:text-2xl font-bold text-teal-400">Авторский Чай</h1>
-            <ul class="flex space-x-3 md:space-x-6 text-sm md:text-base">
-                <li><a href="#derryl" class="hover:text-green-400 transition-colors duration-300">Дэррил</a></li>
-                <li><a href="#plan-b" class="hover:text-blue-400 transition-colors duration-300">План Б</a></li>
-                <li><a href="#nektar" class="hover:text-orange-400 transition-colors duration-300">Нектар</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section class="container mx-auto px-4 py-12 md:py-16 text-center">
-            <h2 class="text-3xl md:text-5xl font-bold mb-3 text-teal-300">Коллекция Уникального Иван-Чая</h2>
-            <p class="text-md md:text-xl text-gray-400 max-w-3xl mx-auto">Погрузитесь в мир вкусов и историй, где каждый сорт чая — это не просто напиток, а целое приключение.</p>
-        </section>
-
-        <div id="tea-sections" class="flex flex-col gap-8 md:gap-12">
+        <!-- Сетка игроков -->
+        <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             
-            <section id="derryl" class="relative overflow-hidden py-8 md:py-12">
-                <div class="container mx-auto px-4">
-                    <div class="bg-gray-800 p-6 md:p-8 rounded-xl shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.01] relative z-10">
-                        <div class="flex flex-col md:flex-row gap-6 md:gap-10 items-center">
-                            <div class="w-full md:w-1/2">
-                                <div class="chart-container">
-                                    <canvas id="derrylChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="w-full md:w-1/2 text-center md:text-left">
-                                <h3 class="text-2xl md:text-3xl font-bold mb-1 text-green-400">Дэррил</h3>
-                                <p class="text-lg font-medium text-green-300 mb-3">Зелёный Запечённый Иван-чай</p>
-                                <p class="text-gray-300 mb-4 leading-relaxed text-sm md:text-base">Тёплый, обволакивающий вкус с нотками летних полей. Сладкий и слегка терпкий, согрет медленным запеканием. Опыт, который погружает в уникальную атмосферу.</p>
-                                <button data-target="story-derryl" class="toggle-story-btn bg-green-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-green-700 transition-transform duration-300 hover:scale-105 text-sm">История появления</button>
-                            </div>
-                        </div>
-                        <div id="story-derryl" class="story-content mt-6 pt-4 border-t border-green-700">
-                            <p class="text-gray-400 leading-relaxed text-xs md:text-sm">Однажды, в далёкой-далёкой деревне, где время текло по-особому, жил чудаковатый травник по имени Дэррил. Он был известен своими экспериментами, но однажды случилось нечто из ряда вон выходящее. Дэррил собирал иван-чай в полнолуние, когда на него напал... нет, не медведь, а гигантский, очень голодный хомяк, который утащил весь его урожай в свою подземную нору. Дэррил, недолго думая, бросился следом. Нора оказалась лабиринтом, ведущим прямо к центру Земли, где, как оказалось, находилась древняя, давно забытая печь, питаемая остаточным теплом ядра планеты. Хомяк, видимо, был гурманом, потому что аккуратно разложил листья иван-чая на горячих камнях. Дэррил, вместо того чтобы паниковать, решил подождать. И вот, спустя несколько дней блужданий по подземным туннелям, он обнаружил свой чай, идеально запечённый, с невероятным ароматом и вкусом. Хомяк, к слову, был уже сыт и мирно спал, а Дэррил вернулся домой с новым, уникальным рецептом, назвав его своим именем.</p>
-                        </div>
-                    </div>
+            <!-- Игрок 1 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_001.png" alt="Фото игрока 001">
+                    <div class="player-number">001</div>
                 </div>
-            </section>
-
-            <section id="plan-b" class="relative overflow-hidden py-8 md:py-12">
-                <div class="container mx-auto px-4">
-                     <div class="bg-gray-800 p-6 md:p-8 rounded-xl shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.01] relative z-10">
-                        <div class="flex flex-col md:flex-row-reverse gap-6 md:gap-10 items-center">
-                             <div class="w-full md:w-1/2">
-                                <div class="chart-container">
-                                    <canvas id="planBChart"></canvas>
-                                </div>
-                            </div>
-                             <div class="w-full md:w-1/2 text-center md:text-left">
-                                <h3 class="text-2xl md:text-3xl font-bold mb-1 text-blue-400">План Б</h3>
-                                <p class="text-lg font-medium text-blue-300 mb-3">Зелёный Обычный Базовый Иван-чай</p>
-                                <p class="text-gray-300 mb-4 leading-relaxed text-sm md:text-base">Воплощение чистоты и простоты. Свежесть утренней росы и энергия диких трав в каждой чашке. Ваш надёжный и безупречный спутник на каждый день.</p>
-                                <button data-target="story-plan-b" class="toggle-story-btn bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 transition-transform duration-300 hover:scale-105 text-sm">История появления</button>
-                            </div>
-                        </div>
-                        <div id="story-plan-b" class="story-content mt-6 pt-4 border-t border-blue-700">
-                            <p class="text-gray-400 leading-relaxed text-xs md:text-sm">В одной секретной лаборатории, глубоко под землёй, группа гениальных, но очень рассеянных учёных работала над созданием "Идеального Чая Будущего". Их проект назывался "Проект Альфа". Они использовали нанотехнологии, квантовые флуктуации и даже пытались заставить чайные листья петь оперу, чтобы улучшить вкус. Но все их попытки заканчивались катастрофой: то чай становился невидимым, то начинал разговаривать на древних языках, то превращался в желе. В отчаянии, один из младших лаборантов, уставший от всей этой сумасшедшей науки, просто взял обычные, свежие листья иван-чая, высушил их на солнце, как делали его предки, и заварил. Результат был настолько чистым, ароматным и восхитительным, что учёные, попробовав его, забыли обо всех своих безумных экспериментах. Они назвали этот чай "План Б", потому что это был их запасной вариант, который оказался идеальным. С тех пор они поняли, что иногда самый простой путь – самый лучший.</p>
-                        </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
                     </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
                 </div>
-            </section>
+            </div>
 
-            <section id="nektar" class="relative overflow-hidden py-8 md:py-12">
-                <div class="container mx-auto px-4">
-                     <div class="bg-gray-800 p-6 md:p-8 rounded-xl shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.01] relative z-10">
-                        <div class="flex flex-col md:flex-row gap-6 md:gap-10 items-center">
-                            <div class="w-full md:w-1/2">
-                                <div class="chart-container">
-                                    <canvas id="nektarChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="w-full md:w-1/2 text-center md:text-left">
-                                <h3 class="text-2xl md:text-3xl font-bold mb-1 text-orange-400">Нектар</h3>
-                                <p class="text-lg font-medium text-orange-300 mb-3">Чёрный Долго Ферментированный и Обжаренный</p>
-                                <p class="text-gray-300 mb-4 leading-relaxed text-sm md:text-base">Насыщенный аромат с нотками сухофруктов и дымки. Результат долгой ферментации и обжаривания. Напиток с характером для особых моментов.</p>
-                                <button data-target="story-nektar" class="toggle-story-btn bg-orange-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-orange-700 transition-transform duration-300 hover:scale-105 text-sm">История появления</button>
-                            </div>
-                        </div>
-                        <div id="story-nektar" class="story-content mt-6 pt-4 border-t border-orange-700">
-                            <p class="text-gray-400 leading-relaxed text-xs md:text-sm">Давным-давно, высоко в горах, где облака касались вершин, жил старый отшельник, который был одержим идеей создать чай, способный даровать бессмертие (или хотя бы очень хорошее настроение). Он собирал листья иван-чая только в те ночи, когда на небе появлялась редкая Комета Долголетия. Затем он помещал их в гигантские дубовые бочки, которые закапывал глубоко в землю под корнями древних деревьев, где они ферментировались... нет, не годами, а целыми эпохами! Время от времени, когда наступало солнечное затмение, отшельник выкапывал бочки и обжаривал чай на углях, сделанных из метеоритов, упавших с той самой Кометы Долголетия. Однажды, во время такого обжаривания, в его костёр случайно упала капля росы, собранная с крыльев мифической бабочки, которая жила только на вершинах гор. Эта капля, соединившись с древним чаем и метеоритным огнём, превратила его в нечто невероятное – густой, ароматный, почти сиропообразный напиток, который отшельник назвал "Нектаром". С тех пор он не старел, а просто наслаждался своим чаем, делясь им лишь с теми, кто мог оценить его поистине космический вкус.</p>
-                        </div>
+            <!-- Игрок 2 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_002.png" alt="Фото игрока 002">
+                    <div class="player-number">002</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
                     </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
                 </div>
-            </section>
-        </div>
+            </div>
 
-        <section id="feedback" class="container mx-auto px-4 py-12 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-200">Ваше мнение важно для нас!</h2>
-            <p class="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">Поделитесь своим впечатлением о нашей коллекции чая. Мы ценим каждый отзыв!</p>
-            <a href="https://forms.yandex.ru/cloud/687774de90fa7b828eab5c65" target="_blank" rel="noopener noreferrer" class="inline-block bg-purple-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-purple-700 transition-transform duration-300 hover:scale-105 shadow-md">
-                Оставить оценку и отзыв
-            </a>
-        </section>
+            <!-- Игрок 3 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_003.png" alt="Фото игрока 003">
+                    <div class="player-number">003</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
 
-    </main>
+            <!-- Игрок 4 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_004.png" alt="Фото игрока 004">
+                    <div class="player-number">004</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
 
-    <footer class="bg-gray-800 mt-20">
-        <div class="container mx-auto px-4 py-8 text-center text-gray-500">
-            <p>&copy; 2025 Коллекция Авторского Чая. Все права и истории защищены.</p>
-        </div>
-    </footer>
+            <!-- Игрок 5 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_005.png" alt="Фото игрока 005">
+                    <div class="player-number">005</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+            <!-- Игрок 6 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_006.png" alt="Фото игрока 006">
+                    <div class="player-number">006</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
 
-            const teaData = {
-                derryl: {
-                    labels: ['Теплота', 'Таинственность', 'Сладость', 'Уют', 'Хомячность'],
-                    data: [9, 7, 8, 9, 5],
-                    backgroundColor: 'rgba(52, 211, 153, 0.2)', /* green-300 */
-                    borderColor: 'rgba(34, 197, 94, 1)', /* green-500 */
-                    pointBackgroundColor: 'rgba(34, 197, 94, 1)'
-                },
-                planB: {
-                    labels: ['Свежесть', 'Простота', 'Чистота', 'Энергия', 'Научность'],
-                    data: [9, 10, 8, 7, 4],
-                    backgroundColor: 'rgba(96, 165, 250, 0.2)', /* blue-300 */
-                    borderColor: 'rgba(59, 130, 246, 1)', /* blue-500 */
-                    pointBackgroundColor: 'rgba(59, 130, 246, 1)'
-                },
-                nektar: {
-                    labels: ['Глубина', 'Космичность', 'Насыщенность', 'Древность', 'Магия'],
-                    data: [10, 8, 9, 7, 9],
-                    backgroundColor: 'rgba(251, 191, 36, 0.2)', /* amber-300 */
-                    borderColor: 'rgba(245, 158, 11, 1)', /* amber-500 */
-                    pointBackgroundColor: 'rgba(245, 158, 11, 1)'
-                }
-            };
-            
-            const createTeaChart = (canvasId, chartData) => {
-                const ctx = document.getElementById(canvasId).getContext('2d');
-                new Chart(ctx, {
-                    type: 'radar',
-                    data: {
-                        labels: chartData.labels,
-                        datasets: [{
-                            label: 'Профиль Вкуса',
-                            data: chartData.data,
-                            backgroundColor: chartData.backgroundColor,
-                            borderColor: chartData.borderColor,
-                            borderWidth: 2,
-                            pointBackgroundColor: chartData.pointBackgroundColor,
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: chartData.pointBackgroundColor
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            r: {
-                                angleLines: {
-                                    color: 'rgba(255, 255, 255, 0.1)' /* Light lines on dark background */
-                                },
-                                grid: {
-                                    color: 'rgba(255, 255, 255, 0.1)' /* Light grid on dark background */
-                                },
-                                pointLabels: {
-                                    font: {
-                                        size: 12,
-                                        family: "'Montserrat', sans-serif"
-                                    },
-                                    color: '#E5E7EB' /* gray-200 */
-                                },
-                                ticks: {
-                                    backdropColor: 'rgba(0, 0, 0, 0.5)', /* Darker backdrop for ticks */
-                                    color: 'rgba(255, 255, 255, 0.7)', /* Lighter tick labels */
-                                    stepSize: 2,
-                                    showLabelBackdrop: false
-                                },
-                                suggestedMin: 0,
-                                suggestedMax: 10
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.label}: ${context.raw}`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            };
+            <!-- Игрок 7 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_007.png" alt="Фото игрока 007">
+                    <div class="player-number">007</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
 
-            createTeaChart('derrylChart', teaData.derryl);
-            createTeaChart('planBChart', teaData.planB);
-            createTeaChart('nektarChart', teaData.nektar);
+            <!-- Игрок 8 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_008.png" alt="Фото игрока 008">
+                    <div class="player-number">008</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
 
-            const storyButtons = document.querySelectorAll('.toggle-story-btn');
-            storyButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const targetId = button.dataset.target;
-                    const storyElement = document.getElementById(targetId);
-                    
-                    // Toggle 'active' class for smooth transition
-                    storyElement.classList.toggle('active');
-                    
-                    if (storyElement.classList.contains('active')) {
-                        button.textContent = 'Скрыть историю';
-                    } else {
-                        button.textContent = 'История появления';
-                    }
-                });
-            });
-        });
-    </script>
+            <!-- Игрок 9 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_009.png" alt="Фото игрока 009">
+                    <div class="player-number">009</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 10 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_010.png" alt="Фото игрока 010">
+                    <div class="player-number">010</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 11 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_011.png" alt="Фото игрока 011">
+                    <div class="player-number">011</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 12 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_012.png" alt="Фото игрока 012">
+                    <div class="player-number">012</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 13 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_013.png" alt="Фото игрока 013">
+                    <div class="player-number">013</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 14 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_014.png" alt="Фото игрока 014">
+                    <div class="player-number">014</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 15 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_015.png" alt="Фото игрока 015">
+                    <div class="player-number">015</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold">Дениска ПВП</span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value">14</span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value">Мужчинский</span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value">имею</span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value">карьерный</span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value">я денискапвп прилетел к вам из чудесного мира «майнкрафт» в свои 14 лет я научился крафтить верстак, собрал железную броню и даже победил эндер дракона!</span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value">алкоголь</span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value">Похуй</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 16 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_016.png" alt="Фото игрока 016">
+                    <div class="player-number">016</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 17 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_017.png" alt="Фото игрока 017">
+                    <div class="player-number">017</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 18 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_018.png" alt="Фото игрока 018">
+                    <div class="player-number">018</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 19 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_019.png" alt="Фото игрока 019">
+                    <div class="player-number">019</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Игрок 20 -->
+            <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <div class="relative">
+                    <img class="w-full h-80 object-cover" src="player_020.png" alt="Фото игрока 020">
+                    <div class="player-number">020</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        В игре
+                    </div>
+                    <ul class="space-y-3 text-sm flex-grow">
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>&copy; 2025. Все права защищены. Или нет. Какая разница?</p>
+        </footer>
+    </div>
 </body>
 </html>
