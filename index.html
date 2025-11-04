@@ -95,6 +95,103 @@
                             inset 0 0 40px rgba(255, 255, 255, 0.4);
             }
         }
+        .max-penalty-golden {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 25%, #ffd700 50%, #ffed4e 75%, #ffd700 100%);
+            background-size: 200% 200%;
+            animation: goldenShimmer 3s ease-in-out infinite;
+            border: 3px solid #ffd700 !important;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                        0 0 40px rgba(255, 215, 0, 0.6),
+                        0 0 60px rgba(255, 215, 0, 0.4),
+                        inset 0 0 20px rgba(255, 255, 255, 0.3);
+            transform: scale(1.02);
+        }
+        .max-penalty-golden .text-white {
+            color: #1a1a1a !important;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.6);
+            font-weight: 900;
+        }
+        .max-penalty-golden .penalty-score {
+            color: #1a1a1a !important;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8),
+                         0 0 20px rgba(255, 215, 0, 0.6),
+                         0 0 30px rgba(255, 215, 0, 0.4);
+            font-weight: 900;
+        }
+        .max-penalty-golden .penalty-bar {
+            background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700) !important;
+            background-size: 200% 100%;
+            animation: goldenShimmer 2s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8),
+                        0 0 20px rgba(255, 215, 0, 0.6);
+        }
+        @keyframes goldenShimmer {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        .squid-card.golden-glow {
+            border: 3px solid #ffd700 !important;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
+                        0 0 60px rgba(255, 215, 0, 0.6),
+                        0 0 90px rgba(255, 215, 0, 0.4),
+                        inset 0 0 30px rgba(255, 255, 255, 0.2),
+                        0 20px 30px rgba(236, 72, 153, 0.3);
+            background: linear-gradient(135deg, #1a2a3a 0%, #2a3a4a 50%, #1a2a3a 100%);
+            animation: cardGoldenGlow 3s ease-in-out infinite;
+            position: relative;
+        }
+        .squid-card.golden-glow::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 25%, #ffd700 50%, #ffed4e 75%, #ffd700 100%);
+            background-size: 200% 200%;
+            border-radius: 0.5rem;
+            z-index: -1;
+            animation: goldenShimmer 3s ease-in-out infinite;
+            filter: blur(8px);
+            opacity: 0.6;
+        }
+        @keyframes cardGoldenGlow {
+            0% {
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
+                            0 0 60px rgba(255, 215, 0, 0.6),
+                            0 0 90px rgba(255, 215, 0, 0.4),
+                            inset 0 0 30px rgba(255, 255, 255, 0.2),
+                            0 20px 30px rgba(236, 72, 153, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(255, 215, 0, 1),
+                            0 0 100px rgba(255, 215, 0, 0.8),
+                            0 0 150px rgba(255, 215, 0, 0.6),
+                            inset 0 0 40px rgba(255, 255, 255, 0.3),
+                            0 20px 30px rgba(236, 72, 153, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
+                            0 0 60px rgba(255, 215, 0, 0.6),
+                            0 0 90px rgba(255, 215, 0, 0.4),
+                            inset 0 0 30px rgba(255, 255, 255, 0.2),
+                            0 20px 30px rgba(236, 72, 153, 0.3);
+            }
+        }
+        .squid-card.golden-glow .player-number {
+            border-color: #ffd700 !important;
+            background-color: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
     </style>
 </head>
 <body>
@@ -638,7 +735,7 @@
                     <div class="penalty-item bg-gray-800 rounded-lg p-4 border border-gray-600 hover:border-pink-500 transition-colors">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-white font-bold">Игрок 007</span>
-                            <span class="penalty-score text-pink-500 font-bold text-xl">2</span>
+                            <span class="penalty-score text-pink-500 font-bold text-xl">3/span>
                         </div>
                         <div class="w-full bg-gray-700 rounded-full h-3">
                             <div class="penalty-bar bg-green-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
@@ -738,15 +835,63 @@
         // Функция для обновления визуального графика штрафных баллов
         function updatePenaltyChart() {
             const penaltyItems = document.querySelectorAll('.penalty-item');
+            let maxScore = -1;
+            const maxScoreElements = [];
+            const maxPlayerNumbers = [];
             
+            // Сначала находим максимальный балл и все элементы с ним
+            penaltyItems.forEach(item => {
+                const scoreElement = item.querySelector('.penalty-score');
+                const playerNameElement = item.querySelector('.text-white.font-bold');
+                const score = parseInt(scoreElement.textContent);
+                
+                if (score > maxScore) {
+                    maxScore = score;
+                    maxScoreElements.length = 0; // Очищаем массив
+                    maxPlayerNumbers.length = 0;
+                    maxScoreElements.push(item);
+                    // Извлекаем номер игрока из текста (например, "Игрок 007" -> "007")
+                    if (playerNameElement) {
+                        const match = playerNameElement.textContent.match(/(\d{3})/);
+                        if (match) {
+                            maxPlayerNumbers.push(match[1]);
+                        }
+                    }
+                } else if (score === maxScore && score > 0) {
+                    maxScoreElements.push(item);
+                    if (playerNameElement) {
+                        const match = playerNameElement.textContent.match(/(\d{3})/);
+                        if (match) {
+                            maxPlayerNumbers.push(match[1]);
+                        }
+                    }
+                }
+            });
+            
+            // Убираем золотое свечение со всех карточек игроков
+            document.querySelectorAll('.squid-card').forEach(card => {
+                card.classList.remove('golden-glow');
+            });
+            
+            // Добавляем золотое свечение к карточкам игроков с максимальными баллами
+            maxPlayerNumbers.forEach(playerNum => {
+                document.querySelectorAll('.squid-card').forEach(card => {
+                    const playerNumberElement = card.querySelector('.player-number');
+                    if (playerNumberElement && playerNumberElement.textContent.trim() === playerNum) {
+                        card.classList.add('golden-glow');
+                    }
+                });
+            });
+            
+            // Теперь обновляем все элементы графика
             penaltyItems.forEach(item => {
                 const scoreElement = item.querySelector('.penalty-score');
                 const barElement = item.querySelector('.penalty-bar');
                 const score = parseInt(scoreElement.textContent);
                 
                 // Максимальное количество баллов для расчета процентов (10 баллов = 100%)
-                const maxScore = 10;
-                const percentage = Math.min((score / maxScore) * 100, 100);
+                const maxScoreForPercentage = 10;
+                const percentage = Math.min((score / maxScoreForPercentage) * 100, 100);
                 
                 // Обновляем ширину полоски прогресса
                 barElement.style.width = percentage + '%';
@@ -755,19 +900,26 @@
                 scoreElement.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500', 'text-pink-500');
                 barElement.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-red-500', 'bg-pink-500');
                 
-                // Применяем новый цвет в зависимости от количества баллов
-                if (score === 0) {
-                    scoreElement.classList.add('text-green-500');
-                    barElement.classList.add('bg-green-500');
-                } else if (score >= 1 && score <= 3) {
-                    scoreElement.classList.add('text-yellow-500');
-                    barElement.classList.add('bg-yellow-500');
-                } else if (score >= 4) {
-                    scoreElement.classList.add('text-red-500');
-                    barElement.classList.add('bg-red-500');
+                // Если это игрок с максимальными баллами, добавляем золотое свечение
+                if (maxScoreElements.includes(item) && score > 0) {
+                    item.classList.add('max-penalty-golden');
                 } else {
-                    scoreElement.classList.add('text-pink-500');
-                    barElement.classList.add('bg-pink-500');
+                    item.classList.remove('max-penalty-golden');
+                    
+                    // Применяем обычный цвет в зависимости от количества баллов
+                    if (score === 0) {
+                        scoreElement.classList.add('text-green-500');
+                        barElement.classList.add('bg-green-500');
+                    } else if (score >= 1 && score <= 3) {
+                        scoreElement.classList.add('text-yellow-500');
+                        barElement.classList.add('bg-yellow-500');
+                    } else if (score >= 4) {
+                        scoreElement.classList.add('text-red-500');
+                        barElement.classList.add('bg-red-500');
+                    } else {
+                        scoreElement.classList.add('text-pink-500');
+                        barElement.classList.add('bg-pink-500');
+                    }
                 }
             });
         }
