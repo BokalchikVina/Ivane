@@ -68,9 +68,43 @@
         .info-value {
             color: #e2e8f0; /* Белый */
         }
+        .golden-banner {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+            color: #1a1a1a;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                         0 0 40px rgba(255, 215, 0, 0.6),
+                         0 0 60px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6),
+                        0 0 60px rgba(255, 215, 0, 0.4),
+                        0 0 90px rgba(255, 215, 0, 0.2),
+                        inset 0 0 30px rgba(255, 255, 255, 0.3);
+            animation: goldenGlow 2s ease-in-out infinite alternate;
+        }
+        @keyframes goldenGlow {
+            0% {
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.6),
+                            0 0 60px rgba(255, 215, 0, 0.4),
+                            0 0 90px rgba(255, 215, 0, 0.2),
+                            inset 0 0 30px rgba(255, 255, 255, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 50px rgba(255, 215, 0, 0.8),
+                            0 0 100px rgba(255, 215, 0, 0.6),
+                            0 0 150px rgba(255, 215, 0, 0.4),
+                            inset 0 0 40px rgba(255, 255, 255, 0.4);
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Золотой баннер с суммой -->
+    <div class="golden-banner text-center py-6 md:py-8 mb-6 md:mb-8 border-b-4 border-yellow-400">
+        <div class="text-5xl md:text-7xl lg:text-8xl font-black tracking-wider">
+            1193 <span class="text-3xl md:text-5xl lg:text-6xl">р.</span>
+        </div>
+    </div>
+
     <div class="container mx-auto p-4 md:p-8">
         <!-- Заголовок -->
         <header class="text-center mb-12">
@@ -254,22 +288,22 @@
             <!-- Игрок 8 -->
             <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
                 <div class="relative">
-                    <img class="w-full h-60 md:h-80 object-cover" src="player_008.png" alt="Фото игрока 008">
-                    <div class="player-number">008</div>
+                    <img class="w-full h-60 md:h-80 object-cover opacity-60" src="player_008.png" alt="Фото игрока 008">
+                    <div class="player-number" style="border-color: #ef4444;">008</div>
                 </div>
                 <div class="p-3 md:p-6 flex-grow flex flex-col">
-                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
-                        В игре
+                    <div class="status-badge status-eliminated text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        Выбыл
                     </div>
                     <ul class="space-y-3 text-sm flex-grow">
-                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
-                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold">Данил</span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value">Неизвестно</span></li>
                     </ul>
                 </div>
             </div>
@@ -323,12 +357,12 @@
             <!-- Игрок 11 -->
             <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
                 <div class="relative">
-                    <img class="w-full h-60 md:h-80 object-cover" src="player_011.png" alt="Фото игрока 011">
-                    <div class="player-number">011</div>
+                    <img class="w-full h-60 md:h-80 object-cover opacity-60" src="player_011.png" alt="Фото игрока 011">
+                    <div class="player-number" style="border-color: #ef4444;">011</div>
                 </div>
                 <div class="p-3 md:p-6 flex-grow flex flex-col">
-                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
-                        В игре
+                    <div class="status-badge status-eliminated text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        Выбыл
                     </div>
                     <ul class="space-y-3 text-sm flex-grow">
                         <li><span class="info-label">Имя:</span> <span class="info-value font-bold">Еблан Долбилович</span></li>
@@ -346,22 +380,22 @@
             <!-- Игрок 12 -->
             <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
                 <div class="relative">
-                    <img class="w-full h-60 md:h-80 object-cover" src="player_012.png" alt="Фото игрока 012">
-                    <div class="player-number">012</div>
+                    <img class="w-full h-60 md:h-80 object-cover opacity-60" src="player_012.png" alt="Фото игрока 012">
+                    <div class="player-number" style="border-color: #ef4444;">012</div>
                 </div>
                 <div class="p-3 md:p-6 flex-grow flex flex-col">
-                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
-                        В игре
+                    <div class="status-badge status-eliminated text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        Выбыл
                     </div>
                     <ul class="space-y-3 text-sm flex-grow">
-                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
-                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold">Марина</span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value">Неизвестно</span></li>
                     </ul>
                 </div>
             </div>
@@ -392,12 +426,12 @@
             <!-- Игрок 14 -->
             <div class="squid-card rounded-lg overflow-hidden shadow-lg flex flex-col">
                 <div class="relative">
-                    <img class="w-full h-60 md:h-80 object-cover" src="player_014.png" alt="Фото игрока 014">
-                    <div class="player-number">014</div>
+                    <img class="w-full h-60 md:h-80 object-cover opacity-60" src="player_014.png" alt="Фото игрока 014">
+                    <div class="player-number" style="border-color: #ef4444;">014</div>
                 </div>
                 <div class="p-3 md:p-6 flex-grow flex flex-col">
-                    <div class="status-badge status-alive text-center py-2 px-4 rounded-full mb-4 text-sm">
-                        В игре
+                    <div class="status-badge status-eliminated text-center py-2 px-4 rounded-full mb-4 text-sm">
+                        Выбыл
                     </div>
                     <ul class="space-y-3 text-sm flex-grow">
                         <li><span class="info-label">Имя:</span> <span class="info-value font-bold">Максимиллиан</span></li>
