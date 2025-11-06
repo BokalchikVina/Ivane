@@ -439,14 +439,14 @@
                         В игре
                     </div>
                     <ul class="space-y-3 text-sm flex-grow">
-                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold"></span></li>
-                        <li><span class="info-label">Возраст:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Пол:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Вес:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Рост:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">О себе:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value"></span></li>
-                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value"></span></li>
+                        <li><span class="info-label">Имя:</span> <span class="info-value font-bold">Масланов Давид Павлович</span></li>
+                        <li><span class="info-label">Возраст:</span> <span class="info-value">19</span></li>
+                        <li><span class="info-label">Пол:</span> <span class="info-value">Мужчинский</span></li>
+                        <li><span class="info-label">Вес:</span> <span class="info-value">65</span></li>
+                        <li><span class="info-label">Рост:</span> <span class="info-value">Неизвестно</span></li>
+                        <li><span class="info-label">О себе:</span> <span class="info-value">Главный алкаш и заводила Тюменской области. Разъебный тип </span></li>
+                        <li><span class="info-label">Предпочтения в еде:</span> <span class="info-value">Шашлы</span></li>
+                        <li><span class="info-label">Предпочтения в алкоголе:</span> <span class="info-value">Похуй абсолютно</span></li>
                     </ul>
                 </div>
             </div>
@@ -843,7 +843,9 @@
             penaltyItems.forEach(item => {
                 const scoreElement = item.querySelector('.penalty-score');
                 const playerNameElement = item.querySelector('.text-white.font-bold');
-                const score = parseInt(scoreElement.textContent);
+                // Безопасное получение значения баллов
+                const scoreText = scoreElement ? scoreElement.textContent.trim() : '0';
+                const score = parseInt(scoreText) || 0;
                 
                 if (score > maxScore) {
                     maxScore = score;
@@ -887,7 +889,10 @@
             penaltyItems.forEach(item => {
                 const scoreElement = item.querySelector('.penalty-score');
                 const barElement = item.querySelector('.penalty-bar');
-                const score = parseInt(scoreElement.textContent);
+                
+                // Сохраняем исходное значение баллов перед любыми изменениями
+                const originalScore = scoreElement.textContent.trim();
+                const score = parseInt(originalScore);
                 
                 // Максимальное количество баллов для расчета процентов (10 баллов = 100%)
                 const maxScoreForPercentage = 10;
@@ -903,6 +908,8 @@
                 // Если это игрок с максимальными баллами, добавляем золотое свечение
                 if (maxScoreElements.includes(item) && score > 0) {
                     item.classList.add('max-penalty-golden');
+                    // Явно устанавливаем текст баллов после применения стилей
+                    scoreElement.textContent = originalScore;
                 } else {
                     item.classList.remove('max-penalty-golden');
                     
